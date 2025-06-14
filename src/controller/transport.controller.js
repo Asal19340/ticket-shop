@@ -44,7 +44,7 @@ export class TransportController {
             }
             await TransportController.gettransportById(res, req.params.id);
             const updatedTrasnport = await Transport.findByIdAndUpdate(req.params.id, value, { new: true });
-            return successRes(res, updatedTrasnport, "Transport updated successfully", 200);
+            return successRes(res, updatedTrasnport, 200);
         } catch (error) {
             handleError(res, error);
         }
@@ -55,7 +55,7 @@ export class TransportController {
             await TransportController.gettransportById(res, id);
             await Transport.findByIdAndDelete(id);
             await Ticket.deleteMany({ transport_id: id });
-            return successRes(res, null, "Transport deleted successfully");
+            return successRes(res, null,);
         } catch (error) {
             handleError(res, error);
         }
@@ -67,7 +67,7 @@ export class TransportController {
             }
             const transport = await Transport.findById(id).populate('ticket');
             if (!transport) {
-                return handleError(res, "Transport not found", 404);
+                return handleError(res,404);
             }
             return transport;
         } catch (error) {

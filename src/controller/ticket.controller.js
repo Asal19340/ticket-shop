@@ -17,7 +17,7 @@ export class TicketController {
             }
             const existsTransport = await Transport.findById(value.transport_id);
             if (!existsTransport) {
-                return handleError(res, "Transport not found", 404);
+                return handleError(res,404);
             }
             const ticket = await Ticket.create({
                 transport_id: value.transport_id,
@@ -28,7 +28,7 @@ export class TicketController {
                 arrival: value.arrival,
                 customer_id: value.customer_id
             });
-            return successRes(res, ticket, "Ticket created successfully", 201);
+            return successRes(res, ticket,201);
         } catch (error) {
             handleError(res, error);
         }
@@ -36,7 +36,7 @@ export class TicketController {
     async getAllTickets(req, res) {
         try {
             const tickets = await Ticket.find().populate('transport_id');
-            return successRes(res, tickets, "All tickets fetched successfully", 200);
+            return successRes(res, tickets, 200);
         } catch (error) {
             handleError(res, error);   
         }
@@ -44,7 +44,7 @@ export class TicketController {
     async getTicketById(req, res) {
         try {
             const ticket = await TicketController.getTicketsById(res, req.params.id);
-            return successRes(res, ticket, "Ticket fetched successfully", 200);
+            return successRes(res, ticket,  200);
         } catch (error) {
             handleError(res, error);
         }
@@ -58,16 +58,16 @@ export class TicketController {
                 return handleError(res, error, 422);
             }
             if (value.transport_id && !isValidObjectId(value.transport_id)) {
-                return handleError(res, "Invalid transport ID", 400);
+                return handleError(res, 400);
             }
             if (value.transport_id) {
                 const existsTransport = await Transport.findById(value.transport_id);
                 if (!existsTransport) {
-                    return handleError(res, "Transport not found", 404);
+                    return handleError(res,404);
                 }
             }
             const updatedTicket = await Ticket.findByIdAndUpdate(id,value, { new: true });
-            return successRes(res, updatedTicket, "Ticket updated successfully", 200);
+            return successRes(res, updatedTicket, 200);
         } catch (error) {
             handleError(res, error);
         }
@@ -77,7 +77,7 @@ export class TicketController {
             const id = req.params.id;
             await TicketController.getTicketsById(res, id);
             await Ticket.findByIdAndDelete(id);
-            return successRes(res, null, "Ticket deleted successfully");
+            return successRes(res, null);
         } catch (error) {
             handleError(res, error);
         }
@@ -89,7 +89,7 @@ export class TicketController {
             }
             const ticket = await Ticket.findById(id).populate('transport_id');
             if (!ticket) {
-                return handleError(res, "Ticket not found", 404);
+                return handleError(res,404);
             }
             return ticket;
         } catch (error) {
