@@ -1,7 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import Transport from "../models/transport.model.js";
 import Ticket from "../models/ticket.model.js";
-import { updateTransportValidator,createTransportValidator } from "../validation/transport.validation.js";
+import { updateTransportValidator, createTransportValidator } from "../validation/transport.validation.js";
 import { handleError } from "../helper/error-handle.js";
 import { successRes } from "../helper/success-response.js";
 
@@ -10,7 +10,6 @@ export class TransportController {
     async createTransport(req, res) {
         try {
             const { value, error } = createTransportValidator(req.body);
-            // console.log("Validation Error:", error);
             if (error) {
                 return handleError(res, error, 422);
             }
@@ -67,7 +66,7 @@ export class TransportController {
             }
             const transport = await Transport.findById(id).populate('ticket');
             if (!transport) {
-                return handleError(res,404);
+                return handleError(res, 404);
             }
             return transport;
         } catch (error) {

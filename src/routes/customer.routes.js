@@ -5,7 +5,9 @@ const router = Router();
 const controller = new CustomerController();
 
 router
-    .post('/', controller.SignUp)
+    .post('/signup', controller.signUp)
+    .post('/signin',controller.signIn)
+    .post('/confirm-signin',controller.confirmSignIn)
 
 
 
