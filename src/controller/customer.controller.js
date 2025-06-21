@@ -7,7 +7,7 @@ import config from "../config/index.js";
 import { Token } from "../utils/token-service.js";
 import { generateOTP } from "../helper/generate.otp.js"
 import NodeCache from "node-cache";
-import {transporter} from "../helper/send-mail.js"
+import { transporter } from "../helper/send-mail.js"
 
 
 const token = new Token();
@@ -63,17 +63,17 @@ export class CustomerController {
             const mailOptions = {
                 from: config.MAIL_USER,
                 to: email,
-                subject: 'e-navbats',
+                subject: 'e-navbat',//ticket shop bolw kkgidi nomi
                 text: otp
             }
-            transporter.sendMail(mailOptions,function(error,info){
-                if (error){
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
                     console.log(error);
-                    return handleError(res,"Error on sending to email",400)
-                    
-                }else{
+                    return handleError(res, "Error on sending to email", 400)
+
+                } else {
                     console.log(info);
-                    
+
                 }
             })
             cache.set(email, otp, 120);
@@ -118,9 +118,51 @@ export class CustomerController {
             handleError(res, error);
 
         }
-
     } catch(error) {
         handleError(res, error)
 
+    }
+    async newAccessToken(req, res) {
+        try {
+            const refreshToken = req.cookies?.refreshTokenCustomer
+            if (!refreshToken) {
+                return handleError(res, "Refresh token expired", 400);
+            }
+            const decodedToken = await token.verifyToken(refreshToken, config.REFRESH_TOKEN_KEY)
+            if(!decodedToken){
+                return handleError(res,"Invalid token",400);
+            }
+            const customer = await Customer.findById(decodedToken.id)
+            if(!customer){
+                return handleError(res,"Customer not found",404);
+            }
+            const payload = {id:customer._id};
+            const accessToken = await token.generateAccessToken(payload)
+            return successRes(res,{
+                token:accessToken
+            });
+        } catch (error) {
+            handleError(res, error)
+        }
+    }
+    async logOut(req,res){
+        try {
+            const refreshToken = req.cookie?.refreshTokenCustomer
+            if(!refreshToken){
+                return handleError(res,"Refresh token expired",400);
+            }
+            const decodedToken = await token.verifyToken(refreshToken, config.REFRESH_TOKEN_KEY);
+            if (!decodedToken) {
+                return handleError(res, 'Invalid token', 400);
+            }
+            const customer = await Customer.findById(decodedToken.id);
+            if(!customer){
+                return handleError(res,"Customer not found",404);
+            }
+            res.clearCookie('refreshTokenCustomer')
+            return successRes(res,{})
+        } catch (error) {
+            handleError(res,error)
+        }
     }
 }
