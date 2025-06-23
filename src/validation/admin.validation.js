@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
-export const createValidator = (data) => {
+export const createAdminValidator = (data) => {
     const admin = Joi.object({
         username: Joi.string().min(4).required(),
         password: Joi.string().pattern(passwordRegex).required()
@@ -10,7 +10,7 @@ export const createValidator = (data) => {
     return admin.validate(data);
 };
 
-export const updateValidator = (data) => {
+export const updateAdminValidator = (data) => {
     const admin = Joi.object({
         username: Joi.string().min(4).required(),
         password: Joi.string().pattern(passwordRegex).optional()

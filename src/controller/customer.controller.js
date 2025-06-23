@@ -105,7 +105,7 @@ export class CustomerController {
             };
             const accessToken = await token.generateAccessToken(payload);
             const refreshToken = await token.generateRefreshToken(payload);
-            res.cookie('refreshTokenPatient', refreshToken, {
+            res.cookie('refreshTokenCustomer', refreshToken, {
                 httpOnly: true,
                 secure: true,
                 maxAge: 30 * 24 * 60 * 60 * 1000
@@ -116,11 +116,9 @@ export class CustomerController {
             }, 201);
         } catch (error) {
             handleError(res, error);
-
         }
     } catch(error) {
         handleError(res, error)
-
     }
     async newAccessToken(req, res) {
         try {
