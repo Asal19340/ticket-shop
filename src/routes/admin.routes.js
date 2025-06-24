@@ -8,14 +8,15 @@ import { SelfGuard } from "../guard/self.guard.js";
 const router = Router();
 const controller = new AdminController();
 
-router
-    .post('/', AuthGuard, RolesGuard(['superadmin']), controller.createAdmin)
-    .post('/signin', controller.signInAdmin)
-    .post('/token', controller.newAccessToken)
-    .post('/logout', AuthGuard, controller.logOut)
-    .get('/', AuthGuard, RolesGuard(['superadmin']), controller.getAllAdmins)
-    .get('/:id',AuthGuard,SelfGuard,controller.getAdminById)
-    .patch('/:id', controller.updateAdmin)
-    .delete('/:id', controller.deleteAdmin)
+router 
+     .post('/',AuthGuard,RolesGuard(['superadmin']),controller.createAdmin)
+     .post('/signin',controller.signInAdmin)
+     .post('/token',controller.newAccessToken)
+     .post('/logout',AuthGuard,controller.logOut)
+     .get('/',AuthGuard,RolesGuard(['superadmin']),controller.getAllAdmins)
+     .get('/:id',AuthGuard,SelfGuard,RolesGuard(['superadmin']),controller.getAdminById)
+     .patch('/:id',controller.updateAdmin)
+     .delete('/:id',AuthGuard,SelfGuard,RolesGuard(['superadmin']),controller.deleteAdmin)
+
 
 export default router;
