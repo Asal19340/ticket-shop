@@ -10,6 +10,14 @@ export const createAdminValidator = (data) => {
     return admin.validate(data);
 };
 
+export const SignInAdminValidator = (data) => {
+    const admin = Joi.object({
+        username: Joi.string().min(4).required(),
+        password: Joi.string().required()
+    });
+    return admin.validate(data);
+};
+
 export const updateAdminValidator = (data) => {
     const admin = Joi.object({
         username: Joi.string().min(4).required(),

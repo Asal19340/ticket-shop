@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { TransportController } from "../controller/transport.controller.js";
-
+import { AuthGuard } from "../guard/auth.guard.js";
+import { RolesGuard } from "../guard/roles.guard.js";
 
 const router = Router();
 const controller = new TransportController();
 
 router
-
-    .post('/', controller.createTransport)
-    .get('/', controller.getAllTransports)
-    .get('/:id', controller.getTransportById)
-    .patch('/:id', controller.updateTransport)
-    .delete('/:id', controller.deleteTransport);
+    .post('/', AuthGuard, RolesGuard(['admin', 'superadmin']), controller.createTransport)
+    .get('/', AuthGuard,controller.getAllTransports)
+    .get('/:id',AuthGuard ,controller.getTransportById)
+    .patch('/:id', AuthGuard, RolesGuard(['admin', 'superadmin']), controller.updateTransport)
+    .delete('/:id', AuthGuard, RolesGuard(['admin', 'superadmin']), controller.deleteTransport);
 
 export default router;

@@ -2,7 +2,7 @@ import Admin from '../models/admin.model.js';
 import { Crypto } from '../utils/encrypt-decrypt.js';
 import { handleError } from '../helper/error-handle.js';
 import { successRes } from '../helper/success-response.js';
-import { createAdminValidator, updateAdminValidator } from '../validation/admin.validation.js';
+import { createAdminValidator, SignInAdminValidator, updateAdminValidator } from '../validation/admin.validation.js';
 import { isValidObjectId } from 'mongoose';
 import { Token } from '../utils/token-service.js';
 
@@ -32,13 +32,17 @@ export class AdminController {
     }
     async signInAdmin(req, res) {
         try {
-            const { value, error } = createAdminValidator(req.body);
+            const { value, error } = SignInAdminValidator(req.body);
             if (error) {
                 return handleError(res, error, 422);
             }
             const admin = await Admin.findOne({ username: value.username });
             if (!admin) {
                 return handleError(res, 'Admin not found', 404);
+            }
+            const isMatchPass = await crypto.decrypt(value.password, admin.hashedPassword);
+            if (!isMatchPass) {
+                return handleError(res, 'Username or password incorrect', 400);
             }
             const payload = { id: admin._id, role: admin.role };
             const accessToken = await token.generateAccessToken(payload);

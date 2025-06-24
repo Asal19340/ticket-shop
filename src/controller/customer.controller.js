@@ -163,4 +163,58 @@ export class CustomerController {
             handleError(res,error)
         }
     }
+    async getAllCustomer (req,res){
+        try {
+        const customer = Customer.find();
+        return successRes(res,customer,200)
+        } catch (error) {
+            handleError(res,error)
+        }
+    }
+    async getCustomerById(req, res) {
+        try {
+            const customer = await CustomerController.getcustomerById(res, req.params.id);
+            return successRes(res, customer, 200);
+        } catch (error) {
+            handleError(res, error);
+        }
+    }
+    async updateCustomer(req, res) {
+        try {
+            const { value, error } = updateCustomerValidator(req.body);
+            if (error) {
+                return handleError(res, error, 422);
+            }
+            await CustomerController.getcustomertById(res, req.params.id);
+            const updatedCustomer= await Customer.findByIdAndUpdate(req.params.id, value, { new: true });
+            return successRes(res, updatedCustomer, 200);
+        } catch (error) {
+            handleError(res, error);
+        }
+    }
+    async deleteCustomer(req, res) {
+        try {
+            const id = req.params.id;
+            await CustomerController.getcustomertById(res, id);
+            await Customer.findByIdAndDelete(id);
+            return successRes(res, null,);
+        } catch (error) {
+            handleError(res, error);
+        }
+    }
+
+    static async getcustomertById(res, id) {
+        try {
+            if (!isValidObjectId(id)) {
+                return handleError(res, "Invalid customer ID", 400);
+            }
+            const customer = await Customer.findById(id);
+            if (!customer) {
+                return handleError(res, 404);
+            }
+            return customer;
+        } catch (error) {
+            handleError(res, error);
+        }
+    }
 }
