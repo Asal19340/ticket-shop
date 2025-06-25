@@ -114,9 +114,6 @@ export class CustomerController {
                 data: customer,
                 token: accessToken
             }, 201);
-        } catch (error) {
-            handleError(res, error);
-        }
     } catch(error) {
         handleError(res, error)
     }
